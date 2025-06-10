@@ -1,0 +1,56 @@
+# PEFT Training Configuration
+
+# Model Configuration
+model_name: "distilbert-base-uncased"
+num_labels: 2
+max_length: 128
+
+# Dataset Configuration
+train_sample_size: 5000
+validation_sample_size: 500
+
+# Training Configuration
+epochs: 3
+batch_size: 16
+eval_batch_size: 32
+learning_rate: 0.0005
+weight_decay: 0.01
+save_steps: 500
+
+# LoRA Configuration
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.1
+lora_target_modules:
+  - "q_lin"
+  - "v_lin"
+  - "k_lin"
+  - "out_lin"
+lora_bias: "none"
+
+# QLoRA Configuration
+qlora_batch_size: 8
+qlora_learning_rate: 0.0001
+qlora_r: 8
+qlora_alpha: 16
+qlora_dropout: 0.05
+qlora_target_modules:
+  - "q_lin"
+  - "v_lin"
+
+# Evaluation Configuration
+metrics:
+  - "accuracy"
+  - "f1"
+  - "precision"
+  - "recall"
+
+# Output Configuration
+output_dir: "./peft_output"
+save_visualizations: true
+save_models: true
+
+# Experiment Configuration
+seed: 42
+use_fp16: true
+gradient_accumulation_steps: 1
