@@ -317,9 +317,9 @@ If you use this project in your research, please cite:
 ```bibtex
 @software{lightweight_fine_tuning,
   title={Lightweight Fine-Tuning: Parameter-Efficient Adaptation with LoRA and QLoRA},
-  author={Your Name},
+  author={Stefano Blando},
   year={2024},
-  url={https://github.com/yourusername/lightweight-fine-tuning}
+  url={https://github.com/StefanoBlando/peft-model--finetuning}
 }
 ```
 
