@@ -54,7 +54,7 @@ real-estate-ai-agent/
 
 ---
 
-## 🔹 Snippet 5 — Semantic Search & Vector Database
+## Semantic Search & Vector Database
 
 ```markdown
 ## Semantic Search and Vector Database
