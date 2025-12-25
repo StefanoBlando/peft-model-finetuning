@@ -56,7 +56,7 @@ real-estate-ai-agent/
 
 ## Semantic Search & Vector Database
 
-```markdown
+
 ## Semantic Search and Vector Database
 
 The project uses a vector database to store embeddings of real estate listings, enabling semantic retrieval based on buyer intent rather than exact keyword matches.
@@ -68,7 +68,6 @@ This approach allows the system to:
 - Match abstract preferences such as lifestyle or design
 - Handle varied phrasing and synonyms
 - Retrieve relevant listings even when keywords are absent
-```
 
 ## Semantic Search Effectiveness
 
