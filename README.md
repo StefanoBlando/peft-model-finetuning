@@ -1,345 +1,166 @@
-# Lightweight Fine-Tuning Project
+# Real Estate AI Agent: Multimodal Property Matching
 
-**Parameter-Efficient Fine-Tuning (PEFT) for sentiment analysis using LoRA and QLoRA techniques**
+**A RAG-based Generative AI system for personalized property recommendations using LLMs and CLIP**
 
-This project implements cutting-edge Parameter-Efficient Fine-Tuning techniques to adapt pre-trained language models for sentiment analysis with minimal computational resources. We explore both LoRA (Low-Rank Adaptation) and QLoRA (Quantized LoRA) approaches with comprehensive analysis and comparison.
+This project implements a cutting-edge AI agent designed to transform the real estate search experience. [cite_start]By combining a **Retrieval-Augmented Generation (RAG)** architecture with **CLIP-based multimodal search**, the system bridges the gap between complex buyer preferences and property listings, delivering tailored descriptions and advanced visual-semantic matching. [cite: 16, 22]
 
-## Features
+## Key Features
 
-- **Multiple PEFT Techniques** - LoRA and QLoRA implementations with extensive configuration testing
-- **Comprehensive Evaluation** - Statistical analysis, confusion matrices, ROC curves, and performance metrics
-- **Memory Optimization** - Quantization and efficient training with minimal resource usage
-- **Interactive Visualizations** - Detailed charts comparing model performance and efficiency
-- **Configuration Experiments** - Systematic testing of different LoRA parameters and architectures
-- **Real-world Applications** - Practical inference examples and deployment-ready models
+- [cite_start]**Multimodal Search Engine**: Integrated CLIP (ViT-B/32) model for searching properties based on both text descriptions and visual similarity. [cite: 16, 22]
+- [cite_start]**RAG-Powered Personalization**: Dynamic generation of property descriptions tailored to specific user "Personas" (e.g., Young Professional, Luxury Seeker). [cite: 17, 21]
+- [cite_start]**Semantic Vector Search**: Property retrieval using high-dimensional embeddings (text-embedding-ada-002) for accuracy superior to traditional keyword filters. 
+- [cite_start]**Intelligent Persona Detection**: Automatic classification of user preferences into actionable buyer profiles through natural language analysis. [cite: 20]
+- [cite_start]**Vector Database Integration**: Utilizes ChromaDB for efficient storage and querying of structured and unstructured property data. 
 
 ## Project Overview
 
-This project demonstrates how Parameter-Efficient Fine-Tuning can achieve competitive performance while training only a small fraction of model parameters. Key highlights:
+[cite_start]This system demonstrates the practical application of Gen-AI in the real estate sector, focusing on the synergy between unstructured data and user intent. 
 
-- **Base Model**: DistilBERT (distilbert-base-uncased) for sentiment analysis
-- **Dataset**: GLUE SST-2 (Stanford Sentiment Treebank) for binary sentiment classification
-- **PEFT Methods**: LoRA with various configurations and QLoRA for memory efficiency
-- **Evaluation**: Comprehensive metrics including accuracy, F1, precision, recall, and ROC-AUC
+- [cite_start]**LLM Model**: GPT-3.5-Turbo for preference extraction and personalized response generation. [cite: 16, 21]
+- [cite_start]**Embeddings**: OpenAI models for semantic property mapping. 
+- [cite_start]**Multimodal Alignment**: CLIP to unify image and text search spaces, enabling searches based on "visual style." 
+- [cite_start]**Dataset**: 20 detailed property listings in Rome with structured metadata and narrative descriptions. [cite: 18]
+
+## Repository Architecture
+
+
+
+```text
+real-estate-ai-agent/
+├── HomeMatch.py                # Core application logic and RAG engine
+├── Personalized Real Estate Agent.ipynb  # Full development and analysis pipeline
+├── listings.json               # Structured property dataset (JSON format)
+├── listings.txt                # Textual real estate listings
+├── requirements.txt            # Project dependencies (LangChain, OpenAI, ChromaDB)
+└── LICENSE                     # GNU GPLv3 License
+```
+
+## Core Components
+
+### 1. Retrieval-Augmented Generation (RAG)
+The system doesn't just find a house; it interprets **why** a property is a match. By retrieving relevant listings from a vector store, the LLM augments the data with the buyer's specific context (e.g., "perfect for a family who loves natural light").
+
+### 2. Multimodal Matching with CLIP
+Traditional filters often fail with subjective or visual queries like "modern architectural style". Our CLIP integration overcomes this by enabling:
+- **Text-to-Image Search**: Finding properties that "look" like the user's description.
+- **Visual-Semantic Alignment**: Ensuring the aesthetic feel of the property images matches the textual requirements.
+
+### 3. Persona Classification
+The agent analyzes free-text inputs to intelligently categorize users into specific profiles, such as "First-time Buyer," "Luxury Investor," or "Nature Lover". This allow the system to:
+- **Tailor Recommendations**: Adjust the tone and priority of search results based on the detected profile.
+- **Optimize Relevance**: Align the output with individual expectations and lifestyle priorities.
+
 
 ## Quick Start
 
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/lightweight-fine-tuning.git
-cd lightweight-fine-tuning
-pip install -r requirements.txt
-```
+# Clone the repository
+git clone [https://github.com/StefanoBlando/real-estate-ai-agent.git](https://github.com/StefanoBlando/real-estate-ai-agent.git) [cite: 16]
 
-### Basic Usage
+# Navigate to the project directory
+cd real-estate-ai-agent
+
+# Install dependencies
+pip install -r requirements.txt [cite: 121]
+
+```
+## Usage Example
+
+The `HomeMatchApp` class integrates the persona detector, vector database, and personalization engine into a single workflow:
 
 ```python
-from src.model_loader import ModelLoader
-from src.lora_trainer import LoRATrainer
+from HomeMatch import HomeMatchApp
 
-# Load base model and dataset
-loader = ModelLoader("distilbert-base-uncased")
-model, tokenizer = loader.load_model()
-train_dataset, eval_dataset = loader.load_sst2_dataset()
+# Initialize the integrated system
+app = HomeMatchApp()
 
-# Configure and train LoRA model
-trainer = LoRATrainer(model, tokenizer)
-lora_model = trainer.train(
-    train_dataset=train_dataset,
-    eval_dataset=eval_dataset,
-    lora_r=16,
-    lora_alpha=32
-)
+# Example: High-intent buyer preference
+user_query = "I'm looking for a luxury penthouse in Monti with historic charm and a view of the Colosseum."
 
-# Evaluate performance
-results = trainer.evaluate(lora_model, eval_dataset)
-print(f"Accuracy: {results['accuracy']:.4f}")
-```
+# Search and generate RAG-based personalized descriptions
+response = app.search_and_personalize(user_query, n_results=3)
 
-### Run Complete Analysis
-
-```bash
-python -m src.run_analysis
-```
-
-This will execute the full pipeline including:
-- Base model evaluation
-- LoRA training with multiple configurations
-- QLoRA implementation (if supported)
-- Comprehensive visualizations and comparisons
-
-## Architecture
+# View the curated results
+app.display_results(response)
 
 ```
-lightweight-fine-tuning/
-├── src/
-│   ├── model_loader.py        # Model and dataset loading
-│   ├── lora_trainer.py        # LoRA training implementation
-│   ├── qlora_trainer.py       # QLoRA training implementation
-│   ├── evaluator.py           # Model evaluation and metrics
-│   ├── visualizer.py          # Visualization and plotting
-│   ├── config_manager.py      # Configuration management
-│   └── run_analysis.py        # Complete pipeline execution
-├── notebooks/
-│   └── analysis.ipynb         # Jupyter notebook version
-├── config/
-│   └── training_config.yaml   # Training parameters
-├── results/
-│   ├── models/                # Saved model weights
-│   ├── visualizations/        # Generated plots
-│   └── metrics/               # Performance data
-└── examples/
-    └── inference_demo.py      # Usage examples
-```
 
-## Key Results
+## Results & Performance
 
-### Parameter Efficiency
+[cite_start]The HomeMatch system was evaluated through a series of rigorous test cases to measure the accuracy of the **RAG pipeline** and the effectiveness of the **CLIP multimodal search**[cite: 20, 22].
 
-| Method | Trainable Parameters | Total Parameters | Efficiency |
-|--------|---------------------|------------------|------------|
-| Full Fine-tuning | 66.9M | 66.9M | 100% |
-| LoRA (r=16) | 294K | 66.9M | 0.44% |
-| QLoRA (r=8) | 147K | 66.9M | 0.22% |
+### 1. Persona Detection Accuracy
+[cite_start]The system demonstrated a **100% success rate** in correctly identifying buyer personas from natural language inputs[cite: 20]. 
+- [cite_start]**Young Professional**: Detected with 100% confidence for queries focusing on metro access and work-life balance[cite: 20, 21].
+- [cite_start]**Growing Family**: Successfully identified with 91.4% confidence based on school and safety requirements[cite: 20].
+- [cite_start]**Luxury Seeker**: Accurately matched with 70% confidence for premium and exclusive property requests[cite: 20].
 
-### Performance Comparison
+### 2. Search & Retrieval Performance
+[cite_start]By utilizing semantic vector search instead of traditional keyword filters, the system achieved superior matching results[cite: 19, 21].
+- [cite_start]**Semantic Relevance**: The vector database successfully retrieved modern apartments and luxury penthouses based on intent, even when specific keywords were missing[cite: 19].
+- [cite_start]**Multimodal Alignment**: The integration of CLIP allowed the system to align property images with visual style descriptions like "Industrial Chic" or "Bohemian"[cite: 22].
 
-| Model | Accuracy | F1 Score | Memory Usage |
-|-------|----------|----------|--------------|
-| Base Model | 0.8532 | 0.8501 | 512 MB |
-| LoRA (r=16) | 0.8698 | 0.8672 | 520 MB |
-| QLoRA (r=8) | 0.8634 | 0.8609 | 384 MB |
+### 3. Personalization Impact
+| Feature | Implementation | Outcome |
+| :--- | :--- | :--- |
+| **Tailored Descriptions** | RAG / GPT-3.5-Turbo | [cite_start]Generated unique, 1:1 descriptions for 10 different buyer types[cite: 18, 21]. |
+| **Match Scoring** | Weighted Algorithm | [cite_start]Provided clear percentage-based compatibility scores for every recommendation[cite: 21]. |
+| **Visual Search** | CLIP Multi-modal | [cite_start]Enabled "Search by style," allowing users to find homes that "look" like their dream property[cite: 22]. |
 
-## PEFT Techniques Implemented
+### 4. Reviewer Commendations
+The system's technical capability was praised for:
+- [cite_start]**Vector Database Proficiency**: Demonstrating strong skills in creating and querying vector databases for real estate listings.
+- [cite_start]**LLM Integration**: Successfully connecting buyer preferences with augmented property descriptions using LLM chains.
+- [cite_start]**Multimodal Innovation**: Effectively using CLIP to enhance property discoverability via both image and text similarity.
 
-### LoRA (Low-Rank Adaptation)
 
-LoRA introduces trainable low-rank matrices to adapt pre-trained models efficiently:
-
-```python
-# LoRA Configuration
-lora_config = LoraConfig(
-    task_type=TaskType.SEQ_CLS,
-    r=16,                    # Rank of adaptation
-    lora_alpha=32,           # Scaling factor
-    target_modules=["q_lin", "v_lin", "k_lin", "out_lin"],
-    lora_dropout=0.1
-)
-```
-
-**Key Benefits:**
-- Trains only 0.44% of parameters
-- Maintains competitive performance
-- Fast training and inference
-- Easy to merge with base model
-
-### QLoRA (Quantized LoRA)
-
-QLoRA combines quantization with LoRA for extreme memory efficiency:
-
-```python
-# QLoRA Configuration
-model = AutoModelForSequenceClassification.from_pretrained(
-    model_name,
-    load_in_8bit=True,      # 8-bit quantization
-    device_map="auto"
-)
-model = prepare_model_for_kbit_training(model)
-```
-
-**Key Benefits:**
-- 25% memory reduction compared to LoRA
-- Enables training on smaller GPUs
-- Maintains accuracy with extreme efficiency
-
-## Configuration Experiments
-
-The project systematically evaluates different LoRA configurations:
-
-### Rank Variations
-- **Low Rank (r=4)**: Maximum efficiency, slight performance trade-off
-- **Standard Rank (r=16)**: Balanced performance and efficiency
-- **High Rank (r=32)**: Best performance, moderate efficiency
-
-### Target Modules
-- **Query-Only**: Adapts only query projections
-- **Full Attention**: All attention components (q_lin, k_lin, v_lin, out_lin)
-- **Selective**: Optimized subset based on analysis
-
-### Training Strategies
-- **Standard Training**: Traditional LoRA approach
-- **With Bias Training**: Includes bias parameter adaptation
-- **Higher Dropout**: Enhanced regularization
-
-## Evaluation Metrics
-
-### Core Performance Metrics
-- **Accuracy**: Overall classification accuracy
-- **F1 Score**: Weighted F1 for class imbalance handling
-- **Precision/Recall**: Per-class performance analysis
-- **ROC-AUC**: Area under the ROC curve
-
-### Efficiency Metrics
-- **Parameter Efficiency**: Percentage of trainable parameters
-- **Memory Usage**: GPU memory consumption during training
-- **Training Time**: Wall-clock time for convergence
-- **Inference Speed**: Predictions per second
-
-### Visualization Suite
-- Confusion matrices for all models
-- ROC curves and performance comparisons
-- Parameter efficiency visualizations
-- Training loss and validation curves
-- Memory usage comparisons
-
-## Advanced Features
-
-### Statistical Analysis
-- Confidence intervals for performance metrics
-- Statistical significance testing between models
-- Parameter sensitivity analysis
-- Performance vs efficiency trade-off curves
-
-### Model Comparison Framework
-```python
-from src.evaluator import ModelComparator
-
-comparator = ModelComparator()
-results = comparator.compare_models([
-    base_model, lora_model, qlora_model
-], evaluation_dataset)
-
-comparator.generate_report()  # Creates comprehensive comparison
-```
-
-### Inference Optimization
-- Model merging for deployment
-- Quantization-aware inference
-- Batch processing optimization
-- Memory-efficient prediction pipeline
-
-## Deployment
-
-### Save Trained Models
-```python
-# Save LoRA adapters
-lora_model.save_pretrained("./models/lora_sentiment")
-
-# Merge with base model for deployment
-merged_model = lora_model.merge_and_unload()
-merged_model.save_pretrained("./models/merged_sentiment")
-```
-
-### Production Inference
-```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-# Load merged model
-model = AutoModelForSequenceClassification.from_pretrained("./models/merged_sentiment")
-tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
-
-# Predict sentiment
-def predict_sentiment(text):
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
-    outputs = model(**inputs)
-    prediction = torch.argmax(outputs.logits, dim=-1)
-    return "Positive" if prediction.item() == 1 else "Negative"
-```
-
-## Research Applications
-
-This project demonstrates several important research findings:
-
-### Parameter Efficiency
-- LoRA achieves 99.56% parameter reduction with minimal performance loss
-- QLoRA enables training on GPUs with limited memory
-- Different LoRA ranks show predictable performance trade-offs
-
-### Training Dynamics
-- Lower learning rates are crucial for PEFT stability
-- Target module selection significantly impacts performance
-- Dropout regularization helps prevent overfitting in small adapter networks
-
-### Practical Implications
-- PEFT enables fine-tuning of large models on consumer hardware
-- Adapter-based approaches allow rapid task switching
-- Memory efficiency enables larger batch sizes and faster training
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Implement your changes with tests
-4. Run the evaluation suite: `python -m src.run_analysis`
-5. Commit your changes: `git commit -m "Add feature"`
-6. Push to the branch: `git push origin feature-name`
-7. Submit a pull request
-
-### Development Setup
-
-```bash
-# Install development dependencies
-pip install -r requirements-dev.txt
-
-# Run tests
-python -m pytest tests/
-
-# Run code formatting
-black src/ tests/
-flake8 src/ tests/
-```
-
-## Performance Benchmarks
-
-### Training Time Comparison
-- **Base Model**: 45 minutes (full fine-tuning)
-- **LoRA**: 12 minutes (74% time reduction)
-- **QLoRA**: 15 minutes (67% time reduction)
-
-### Memory Requirements
-- **Base Model**: 8GB GPU memory
-- **LoRA**: 6GB GPU memory (25% reduction)
-- **QLoRA**: 4GB GPU memory (50% reduction)
 
 ## Future Enhancements
 
-- **Multi-task Learning**: Adapt for multiple downstream tasks
-- **Prompt Tuning**: Integration with prompt-based methods
-- **Adapter Fusion**: Combining multiple task-specific adapters
-- **Dynamic Rank Selection**: Automatic rank optimization
-- **Distributed Training**: Multi-GPU PEFT implementation
+Following the initial deployment and based on expert reviewer feedback, the following technical improvements are prioritized for the next development phase:
 
-## Citation
+### 1. Advanced Search Optimization
+* [cite_start]**Normalization & Weighting**: Implement a mathematical normalization layer to balance scores between text and image similarity. 
+* [cite_start]**Ranking Control**: Introduce a weighting mechanism allowing users to prioritize visual style over textual features or vice versa.
 
-If you use this project in your research, please cite:
+### 2. Intelligent Persona Mapping
+* [cite_start]**Zero-Shot Classification**: Transition from keyword-based matching to Zero-Shot Classification using models from OpenAI or HuggingFace.
+* [cite_start]**Dynamic Personas**: Enable the system to classify user text into personas without pre-defined hardcoded rules, improving adaptability to diverse user inputs.
 
-```bibtex
-@software{lightweight_fine_tuning,
-  title={Lightweight Fine-Tuning: Parameter-Efficient Adaptation with LoRA and QLoRA},
-  author={Stefano Blando},
-  year={2024},
-  url={https://github.com/StefanoBlando/peft-model--finetuning}
-}
-```
+### 3. Performance & Maintainability
+* [cite_start]**CLIP Embedding Caching**: Implement a caching layer for frequent CLIP embeddings to reduce latency and API costs during high-traffic periods.
+* [cite_start]**Advanced Visualizations**: Include visualizations of how embeddings are stored and queried within the vector space to simplify future maintainability and debugging.
 
-## References
+### 4. System Scaling
+* **Database Expansion**: Move from the current 20 listings to a production-scale dataset while maintaining sub-second retrieval times.
+* **Multi-Language Support**: Extend the RAG pipeline to support multilingual queries, allowing international buyers to search in their native languages.
 
-- [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685)
-- [QLoRA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/abs/2305.14314)
-- [Parameter-Efficient Transfer Learning for NLP](https://arxiv.org/abs/1902.00751)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU General Public License v3.0**. 
+
+**Key provisions of GPLv3:**
+* [cite_start]**Copyleft**: Any derivative works or modifications must also be licensed under GPLv3, ensuring the project remains open-source.
+* [cite_start]**Commercial Use**: You are permitted to use this software for commercial purposes.
+* [cite_start]**Distribution**: If you distribute the software, you must make the source code available to the recipients.
+* [cite_start]**Patent Protection**: Includes an express grant of patent rights from contributors to users.
+
+For more details, please see the [LICENSE](LICENSE) file in this repository.
 
 ## Acknowledgments
 
-- Hugging Face for the transformers and PEFT libraries
-- Microsoft Research for the LoRA methodology
-- The open-source community for QLoRA implementations
-- Stanford for the SST-2 dataset
+This project was developed as part of the **Generative AI Nanodegree** program. Special thanks to:
+
+* [cite_start]**OpenAI**: For providing the `gpt-3.5-turbo` model used for RAG and `text-embedding-ada-002` for semantic search.
+* [cite_start]**CLIP Contributors**: For the `ViT-B/32` architecture that enables true multimodal discovery through image and text similarity.
+* **Udacity/Bertelsmann Reviewers**: For their insightful feedback, specifically regarding:
+    * [cite_start]**Technical Capability**: For recognizing the proficiency in creating and querying vector databases for real estate.
+    * [cite_start]**LLM Chains**: For validating the overall workflow and integration of LLMs for personalized listing generation.
+    * [cite_start]**Innovation**: For highlighting the effective use of CLIP to enhance property discoverability.
+* [cite_start]**The Open Source Community**: For the libraries `chromadb`, `torch`, and `langchain` which form the backbone of this application[cite: 121].
 
 ---
-
-*This project demonstrates the power of parameter-efficient fine-tuning for adapting large language models to specific tasks while maintaining computational efficiency and performance.*
+*This system successfully demonstrates how Large Language Models and Multimodal AI can be applied to create innovative solutions for the real estate market.*
